@@ -17,6 +17,9 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     runs-on: ubuntu-latest
+    permissions:
+     statuses: write  
+     contents: read   
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -47,6 +50,7 @@ jobs:
 
       - name: checking for quality gate
         uses: actions/github-script@v6
+        if: 
         with:
           script: |
             const passed = '${{  steps.tests.outputs.passed }}' == 'true';
