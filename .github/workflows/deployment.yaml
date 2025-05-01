@@ -25,6 +25,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
       - name: validating || formatting
+        id: tests
         run: |
           terraform fmt -check 
           terraform validate 
@@ -36,11 +37,21 @@ jobs:
             echo "Terraform validation and formatting passed"
             echo "passed=true" >> $GITHUB_OUTPUT
           fi
+      - name: debug
+        env:
+          CHECK_ITEM: ${{ steps.tests.outputs.passed }}
+          ALL_STEPS: ${{ toJson(steps) }}
+        run: |
+          echo "CHECK_ITEM: $CHECK_ITEM"
+          echo "ALL_STEPS: $ALL_STEPS"
+
       - name: checking for quality gate
         uses: actions/github-script@v6
+        env:
+          CHECK_ITEM: ${{ steps.tests.outputs.passed }}
         with:
           script: |
-            const passed = steps.tests.outcome == 'success';
+            const passed = ${CHECK_ITEM} == 'success';
             await github.rest.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
