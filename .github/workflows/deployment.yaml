@@ -1,0 +1,60 @@
+name: deployemnt for terraform code on AWS
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/ci-cd
+  pull_request:
+    types:
+      - opened
+      - reopened
+jobs:
+  deployment:
+    name: deployment steps
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        run: terraform init
+      - name: validating || formatting
+        run: |
+          terraform validate && terraform fmt -check 
+          if [[ $? -ne 0 ]]; then
+            echo "Terraform validation or formatting failed"
+            echo "passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "Terraform validation and formatting passed"
+            echo "passed=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Post results
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          script: |
+            const passed = steps.tests.outcome == 'success';
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: passed ? 'success' : 'failure',
+              context: 'Quality Gate',
+              description: passed ? 'All checks passed' : 'Tests failed'
+            });
+            if (!passed) core.setFailed('Quality gate failed');
+      - name: Terraform Plan
+        run: terraform plan
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+      
+      
+
+        
