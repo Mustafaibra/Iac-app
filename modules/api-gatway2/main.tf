@@ -7,8 +7,8 @@ resource "aws_apigatewayv2_api" "dls-gatway2" {
 
 
 resource "aws_apigatewayv2_integration" "dls-gatway-lb-integration" {
-  api_id           = aws_apigatewayv2_api.dls-gatway2.id
-  
+  api_id = aws_apigatewayv2_api.dls-gatway2.id
+
   description      = "Example with a load balancer"
   integration_type = "HTTP_PROXY"
   integration_uri  = var.lb-listener-arn
@@ -17,7 +17,7 @@ resource "aws_apigatewayv2_integration" "dls-gatway-lb-integration" {
   connection_type    = "VPC_LINK"
   connection_id      = var.vpclink-lb-gateway2
 
-  
+
 }
 resource "aws_apigatewayv2_route" "devices-routing" {
   api_id    = aws_apigatewayv2_api.dls-gatway2.id
@@ -27,7 +27,7 @@ resource "aws_apigatewayv2_route" "devices-routing" {
 }
 
 resource "aws_apigatewayv2_stage" "prod-stage" {
-  api_id = aws_apigatewayv2_api.dls-gatway2.id
-  name   = "prod-stage"
+  api_id      = aws_apigatewayv2_api.dls-gatway2.id
+  name        = "prod-stage"
   auto_deploy = true
 }

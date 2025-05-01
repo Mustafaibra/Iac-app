@@ -10,12 +10,12 @@ variable "lb-dns" {
   default     = ""
 }
 variable "connection_type" {
-  type        = string
-  default     = "VPC_LINK"
+  type    = string
+  default = "VPC_LINK"
 }
 
 variable "connection_id" {
-  type        = string
-  default     = ""
+  type    = string
+  default = ""
 }
 

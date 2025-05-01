@@ -4,12 +4,12 @@ resource "aws_lb" "main-lb" {
   name               = "main-lb"
   internal           = true
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.sec_group.id] 
-  subnets            = [aws_subnet.public-subnet-1.id,aws_subnet.public-subnet-2.id]
+  security_groups    = [aws_security_group.sec_group.id]
+  subnets            = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
 
   enable_deletion_protection = false
 
-  
+
   tags = {
     Environment = "prod-lambda-lb"
   }
@@ -28,9 +28,9 @@ resource "aws_lb_listener" "main-listener" {
 }
 
 resource "aws_lb_target_group" "lambda-target-group" {
-  name     = "myLoadBalancerTargets"
+  name        = "myLoadBalancerTargets"
   target_type = "lambda"
-  vpc_id   = aws_vpc.mian-Vpc.id
+  vpc_id      = aws_vpc.mian-Vpc.id
 }
 
 resource "aws_lb_target_group_attachment" "target_group_attachment" {
@@ -41,7 +41,7 @@ resource "aws_lb_target_group_attachment" "target_group_attachment" {
 resource "aws_lambda_permission" "with_lb" {
   statement_id  = "AllowExecutionFromlb"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.main-lambda-function.arn}"
+  function_name = aws_lambda_function.main-lambda-function.arn
   principal     = "elasticloadbalancing.amazonaws.com"
   source_arn    = aws_lb_target_group.lambda-target-group.arn
 }
@@ -92,29 +92,29 @@ resource "aws_lambda_function" "main-lambda-function" {
 resource "aws_apigatewayv2_vpc_link" "vpclink-lb-gateway2" {
   name               = "vpclink lb gatway2"
   security_group_ids = []
-  subnet_ids         = [aws_subnet.public-subnet-1.id,aws_subnet.public-subnet-2.id]
-  
+  subnet_ids         = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
+
 
 
 }
 module "api-gatway2-module" {
-  source = "./modules/api-gatway2"
-  lb-listener-arn = aws_lb_listener.main-listener.arn
+  source              = "./modules/api-gatway2"
+  lb-listener-arn     = aws_lb_listener.main-listener.arn
   vpclink-lb-gateway2 = aws_apigatewayv2_vpc_link.vpclink-lb-gateway2.id
 }
 
 resource "aws_iam_role" "api_gateway_role" {
   name = "api-gateway-role"
-  
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Effect    = "Allow",
+        Effect = "Allow",
         Principal = {
           Service = "apigateway.amazonaws.com"
         },
-        Action    = "sts:AssumeRole"
+        Action = "sts:AssumeRole"
       }
     ]
   })
@@ -128,8 +128,8 @@ resource "aws_iam_policy" "api_gateway_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
+        Effect = "Allow",
+        Action = [
           "elasticloadbalancing:DescribeLoadBalancers",
           "elasticloadbalancing:DescribeListeners",
           "elasticloadbalancing:CreateListener",

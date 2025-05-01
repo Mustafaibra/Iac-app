@@ -24,6 +24,7 @@ jobs:
         run: terraform init
       - name: validating || formatting
         run: |
+#          echo "Validating and formatting Terraform code..." and you should run terraform fmt -recursive this is fmt locally so the QG will not fail
           terraform fmt -check 
           terraform validate 
           if [[ $? -ne 0 ]]; then
@@ -34,9 +35,8 @@ jobs:
             echo "Terraform validation and formatting passed"
             echo "passed=true" >> $GITHUB_OUTPUT
           fi
-      - name: Post results
+      - name: checking for quality gate
         uses: actions/github-script@v6
-        if: always()
         with:
           script: |
             const passed = steps.tests.outcome == 'success';

@@ -21,9 +21,9 @@ resource "aws_api_gateway_method" "dls-gateway-method" {
 
 
 resource "aws_api_gateway_integration" "lb-integration" {
-  rest_api_id             = aws_api_gateway_rest_api.dls-gateway.id
-  resource_id             = aws_api_gateway_resource.dls-gateway-resource.id
-  http_method             = aws_api_gateway_method.dls-gateway-method.http_method
+  rest_api_id = aws_api_gateway_rest_api.dls-gateway.id
+  resource_id = aws_api_gateway_resource.dls-gateway-resource.id
+  http_method = aws_api_gateway_method.dls-gateway-method.http_method
 
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
@@ -34,9 +34,9 @@ resource "aws_api_gateway_integration" "lb-integration" {
 
 resource "aws_api_gateway_deployment" "deployment" {
 
- depends_on  = [aws_api_gateway_integration.lb-integration]
+  depends_on = [aws_api_gateway_integration.lb-integration]
 
-  
+
   rest_api_id = aws_api_gateway_rest_api.dls-gateway.id
   stage_name  = "prod"
 }
