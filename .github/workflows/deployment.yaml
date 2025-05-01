@@ -1,3 +1,5 @@
+#echo "Validating and formatting Terraform code..." and you should run terraform fmt -recursive this is fmt locally so the QG will not fail
+
 name: deployemnt for terraform code on AWS
 on:
   workflow_dispatch:
@@ -24,7 +26,6 @@ jobs:
         run: terraform init
       - name: validating || formatting
         run: |
-#          echo "Validating and formatting Terraform code..." and you should run terraform fmt -recursive this is fmt locally so the QG will not fail
           terraform fmt -check 
           terraform validate 
           if [[ $? -ne 0 ]]; then
