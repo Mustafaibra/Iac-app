@@ -47,11 +47,9 @@ jobs:
 
       - name: checking for quality gate
         uses: actions/github-script@v6
-        env:
-          CHECK_ITEM: ${{ steps.tests.outputs.passed }}
         with:
           script: |
-            const passed = ${CHECK_ITEM} == 'success';
+            const passed = '${{  steps.tests.outputs.passed }}' == 'true';
             await github.rest.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
