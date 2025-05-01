@@ -24,7 +24,8 @@ jobs:
         run: terraform init
       - name: validating || formatting
         run: |
-          terraform validate && terraform fmt -check 
+          terraform fmt -check 
+          terraform validate 
           if [[ $? -ne 0 ]]; then
             echo "Terraform validation or formatting failed"
             echo "passed=false" >> $GITHUB_OUTPUT
