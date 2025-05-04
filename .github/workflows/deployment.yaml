@@ -10,6 +10,7 @@ on:
     types:
       - opened
       - reopened
+      - merged
 jobs:
   deployment:
     name: deployment steps
@@ -47,28 +48,31 @@ jobs:
         run: |
           echo "CHECK_ITEM: $CHECK_ITEM"
           echo "ALL_STEPS: $ALL_STEPS"
-
-      - name: checking for quality gate
-        uses: actions/github-script@v6
-        if: 
+      - name: check quality gate 
+        uses: ./.github/workflows/script-action.yaml
         with:
-          script: |
-            const passed = '${{  steps.tests.outputs.passed }}' == 'true';
-            await github.rest.repos.createCommitStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: context.sha,
-              state: passed ? 'success' : 'failure',
-              context: 'Quality Gate',
-              description: passed ? 'All checks passed' : 'Tests failed'
-            });
-            if (!passed) core.setFailed('Quality gate failed');
+          Result: ${{ steps.tests.outputs.passed }}
+      # - name: checking for quality gate
+      #   uses: actions/github-script@v6
+      #   if: 
+      #   with:
+      #     script: |
+      #       const passed = '${{  steps.tests.outputs.passed }}' == 'true';
+      #       await github.rest.repos.createCommitStatus({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         sha: context.sha,
+      #         state: passed ? 'success' : 'failure',
+      #         context: 'Quality Gate',
+      #         description: passed ? 'All checks passed' : 'Tests failed'
+      #       });
+      #       if (!passed) core.setFailed('Quality gate failed');
       # - name: Terraform Plan
       #   run: terraform plan
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
       
       
 

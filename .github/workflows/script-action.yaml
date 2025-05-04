@@ -1,0 +1,31 @@
+name: this action checks for any quality gate resutlt and send signal 
+on:
+  workflow_call:
+    inputs:
+      Result:
+        required: true
+        type: string
+        default: 'false'
+        description: 'Result of the quality gate check'
+jobs:
+  Checking_Result:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking for quality gate
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const passed = '${{ inputs.Result }}' == 'true';
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: passed ? 'success' : 'failure',
+              context: 'Quality Gate',
+              description: passed ? 'All checks passed' : 'Tests failed'
+            });
+            if (!passed) {
+              throw new Error('Quality gate check failed');
+            }
+            console.log('Quality gate check passed');
+            return passed;
