@@ -17,10 +17,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    runs-on: ubuntu-latest
-    # permissions:
-    #  statuses: write  
-    #  contents: read   
+    runs-on: ubuntu-latest 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -48,6 +45,9 @@ jobs:
         run: |
           ls ./.github/workflows/
   check_quality_gate:
+    permissions:
+     statuses: write  
+     contents: read   
     needs: deployment
     uses: ./.github/workflows/script-reuse.yaml
     with:
