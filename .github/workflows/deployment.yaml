@@ -47,10 +47,11 @@ jobs:
           ALL_STEPS: ${{ toJson(steps) }}
         run: |
           ls ./.github/workflows/
-      - name: check quality gate 
-        uses: ./.github/workflows/script-reuse.yaml@feature/ci-cd
-        with:
-          Result: ${{ steps.tests.outputs.passed }}
+    check_quality_gate:
+      needs: deployment
+      uses: ./.github/workflows/script-reuse.yaml@feature/ci-cd
+      with:
+        Result: ${{ steps.tests.outputs.passed }}
       # - name: checking for quality gate
       #   uses: actions/github-script@v6
       #   if: 
