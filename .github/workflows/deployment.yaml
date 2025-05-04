@@ -40,6 +40,7 @@ jobs:
           ALL_STEPS: ${{ toJson(steps) }}
         run: |
           ls ./.github/workflows/
+          echo " ${cHECK_ITEM}"
   check_quality_gate:
     permissions:
      statuses: write  
@@ -48,14 +49,14 @@ jobs:
     uses: ./.github/workflows/script-reuse.yaml
     with:
       Result: ${{ needs.deployment.outputs.step_output }}
-  debug-job:
-    runs-on: ubuntu-latest
-    needs: deployment
-    steps:
-      - name: Debugging
-        run: |
-          echo "Debugging the deployment job"
-          echo "Passed: ${{ needs.deployment.outputs.step_output }}"
+  # debug-job:
+  #   runs-on: ubuntu-latest
+  #   needs: deployment
+  #   steps:
+  #     - name: Debugging
+  #       run: |
+  #         echo "Debugging the deployment job"
+  #         echo "Passed: ${{ needs.deployment.outputs.step_output }}"
       # - name: checking for quality gate
       #   uses: actions/github-script@v6
       #   if: 
