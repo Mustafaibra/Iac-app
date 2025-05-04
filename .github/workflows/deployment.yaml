@@ -40,7 +40,7 @@ jobs:
           ALL_STEPS: ${{ toJson(steps) }}
         run: |
           ls ./.github/workflows/
-          echo " ${cHECK_ITEM}"
+          echo " ${CHECK_ITEM}"
   check_quality_gate:
     permissions:
      statuses: write  
