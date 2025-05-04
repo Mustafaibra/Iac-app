@@ -32,14 +32,8 @@ jobs:
         run: |
           terraform fmt -check 
           terraform validate 
-          if [[ $? -ne 0 ]]; then
-            echo "Terraform validation or formatting failed"
-            echo "passed=false" >> $GITHUB_OUTPUT
-            exit 1
-          else
-            echo "Terraform validation and formatting passed"
-            echo "passed=true" >> $GITHUB_OUTPUT
-          fi
+          echo "passed= $?" >> $GITHUB_OUTPUT
+
       - name: debug
         env:
           CHECK_ITEM: ${{ steps.tests.outputs.passed }}
