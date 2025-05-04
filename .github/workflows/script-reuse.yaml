@@ -17,6 +17,9 @@ on:
 jobs:
   Checking_Result:
     runs-on: ubuntu-latest
+    permissions:
+     statuses: write  
+     contents: read  
     steps:
       - name: Checking for quality gate
         uses: actions/github-script@v6
