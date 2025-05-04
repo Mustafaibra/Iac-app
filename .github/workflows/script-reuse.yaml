@@ -1,12 +1,5 @@
 name: this action checks for any quality gate resutlt and send signal ss
 on:
-  workflow_dispatch:
-    inputs:
-      Result:
-        required: true
-        type: string
-        default: 'false'
-        description: 'Result of the quality gate check'
   workflow_call:
     inputs:
       Result:
