@@ -1,4 +1,4 @@
-name: this action checks for any quality gate resutlt and send signal 
+name: this action checks for any quality gate resutlt and send signal ss
 on:
   workflow_dispatch:
     inputs:
