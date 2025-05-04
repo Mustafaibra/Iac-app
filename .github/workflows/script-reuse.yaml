@@ -18,6 +18,8 @@ jobs:
   Checking_Result:
     runs-on: ubuntu-latest
     steps:
+      - name: debug first
+        run: echo ${{ inputs.Result }}
       - name: Checking for quality gate
         uses: actions/github-script@v6
         with:
