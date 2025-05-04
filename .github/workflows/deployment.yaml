@@ -46,10 +46,10 @@ jobs:
           CHECK_ITEM: ${{ steps.tests.outputs.passed }}
           ALL_STEPS: ${{ toJson(steps) }}
         run: |
-          ls -R 
+          
           ls ./.github/workflows/
       - name: check quality gate 
-        uses: ./.github/workflows/script-reuse.yaml@feature/ci-cd
+        uses: script-reuse.yaml@feature/ci-cd
         with:
           Result: ${{ steps.tests.outputs.passed }}
       # - name: checking for quality gate
