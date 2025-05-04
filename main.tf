@@ -36,6 +36,7 @@ resource "aws_lb_target_group" "lambda-target-group" {
 resource "aws_lb_target_group_attachment" "target_group_attachment" {
   target_group_arn = aws_lb_target_group.lambda-target-group.arn
   target_id        = aws_lambda_function.main-lambda-function.arn
+  depends_on       = [aws_lambda_permission.with_lb]
 }
 
 resource "aws_lambda_permission" "with_lb" {
