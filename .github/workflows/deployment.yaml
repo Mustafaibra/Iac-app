@@ -46,8 +46,8 @@ jobs:
           CHECK_ITEM: ${{ steps.tests.outputs.passed }}
           ALL_STEPS: ${{ toJson(steps) }}
         run: |
-          echo "CHECK_ITEM: $CHECK_ITEM"
-          echo "ALL_STEPS: $ALL_STEPS"
+          ls -R 
+          ls ./.github/workflows/
       - name: check quality gate 
         uses: ./.github/workflows/script-reuse.yaml@feature/ci-cd
         with:
