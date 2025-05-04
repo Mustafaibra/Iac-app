@@ -51,7 +51,7 @@ jobs:
     needs: deployment
     uses: ./.github/workflows/script-reuse.yaml
     with:
-      Result: ${{ steps.tests.outputs.passed }}
+      Result: ${{ needs.deployment.outputs.passed }}
       # - name: checking for quality gate
       #   uses: actions/github-script@v6
       #   if: 
