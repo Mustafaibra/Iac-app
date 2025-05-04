@@ -49,7 +49,7 @@ jobs:
           ls ./.github/workflows/
   check_quality_gate:
     needs: deployment
-    uses: ./.github/workflows/script-reuse.yaml@feature/ci-cd
+    uses: ./.github/workflows/script-reuse.yaml
     with:
       Result: ${{ steps.tests.outputs.passed }}
       # - name: checking for quality gate
