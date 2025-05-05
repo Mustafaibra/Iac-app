@@ -36,6 +36,8 @@ jobs:
             .terraform
             .terraform.lock.hcl
           key: tf-modules-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            tf-${{ runner.os }}-
 
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
