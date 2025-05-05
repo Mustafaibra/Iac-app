@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/ci-cd
+      - main
   pull_request:
     types:
       - opened
@@ -27,7 +27,6 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-   
       - name: Cache .terraform
         id: tf-modules-cache
         uses: actions/cache@v3
@@ -49,22 +48,11 @@ jobs:
           terraform fmt -check 
           terraform validate 
           echo "passed= $?" >> $GITHUB_OUTPUT
-      - name: debug
-        env:
-          CHECK_ITEM: ${{ steps.tests.outputs.passed }}
-          ALL_STEPS: ${{ toJson(steps) }}
-        run: |
-          ls ./.github/workflows/
-          terraform version 
-          terraform fmt
-          which terraform
-          ls .terraform
-          ls .terraform.lock.hcl
-
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
-      # - name: Terraform Destroy
-      #   run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+    
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
 
   check_quality_gate:
     permissions:
@@ -79,16 +67,20 @@ jobs:
   
   
   
-  
-  # debug-job:
-  #   runs-on: ubuntu-latest
-  #   needs: deployment
-  #   steps:
-  #     - name: Debugging
-  #       run: |
-  #         echo "Debugging the deployment job"
-  #         echo "Passed: ${{ needs.deployment.outputs.step_output }}"
-
+  # ========================
+  # debug and old code 
+  # ========================
+# - name: debug
+#         env:
+#           CHECK_ITEM: ${{ steps.tests.outputs.passed }}
+#           ALL_STEPS: ${{ toJson(steps) }}
+#         run: |
+#           ls ./.github/workflows/
+#           terraform version 
+#           terraform fmt
+#           which terraform
+#           ls .terraform
+#           ls .terraform.lock.hcl
 
   
       # - name: checking for quality gate

@@ -1,4 +1,4 @@
-name: this action checks for any quality gate resutlt and send signal ss
+name: this action checks for any quality gate resutlt and send signal 
 on:
   workflow_call:
     inputs:
