@@ -46,9 +46,8 @@ jobs:
           path: |
             ${{ steps.tf-paths.outputs.config_path }}
             ${{ steps.tf-paths.outputs.bin_path }}
-        key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}
+          key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}
 
-      
       - name: Cache .terraform
         id: tf-modules-cache
         uses: actions/cache@v3
