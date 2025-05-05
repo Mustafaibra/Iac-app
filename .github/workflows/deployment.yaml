@@ -27,7 +27,6 @@ jobs:
       - name: Cache Terraform
         uses: actions/cache@v3
         id: tf-cache-v1
-        id: tf-cache
         with:
           path: |
             /tmp/dummy-cache
