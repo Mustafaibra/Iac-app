@@ -28,7 +28,7 @@ jobs:
         if: steps.tf-cache.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v3
 
-        name: Locate Terraform paths
+      - name: Locate Terraform paths
         id: tf-paths
         run: |
           TF_BIN_PATH=$(which terraform)
