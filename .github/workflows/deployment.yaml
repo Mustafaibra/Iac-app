@@ -3,9 +3,9 @@
 name: deployemnt for terraform code on AWS
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - feature/ci-cd
+  push:
+    branches:
+      - feature/ci-cd
   pull_request:
     types:
       - opened
@@ -26,11 +26,13 @@ jobs:
       - name: cache terrafrom set-up
         env:
           CHECK_ITEM: $(terraform version)
+          PATH: $(which terraform)
         uses: actions/cache@v3
         id: tf-cache
         with:
           path: |
             /usr/bin/terraform
+            ${PATH}
           key: tf-binary-${{ runner.os }}-${CHECK_ITEM}
       - name: Set up Terraform
         if: steps.tf-cache.outputs.cache-hit != 'true'
@@ -61,7 +63,7 @@ jobs:
           ls ./.github/workflows/
           terraform version 
           terraform fmt
-          ls /usr/bin/terraform 
+          which terraform
           ls .terraform
           ls .terraform.lock.hcl
 
