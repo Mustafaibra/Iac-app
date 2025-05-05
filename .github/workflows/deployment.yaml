@@ -46,7 +46,7 @@ jobs:
           path: |
             ${{ steps.tf-paths.outputs.config_path }}
             ${{ steps.tf-paths.outputs.bin_path }}
-          key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}
+          key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}-${{ github.ref }}
 
       - name: Cache .terraform
         id: tf-modules-cache
@@ -55,7 +55,7 @@ jobs:
           path: |
             .terraform
             .terraform.lock.hcl
-          key: tf-modules-${{ hashFiles('**/*.tf') }}
+          key: tf-modules-${{ hashFiles('**/*.tf') }}--${{ github.ref }}
 
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
