@@ -1,0 +1,112 @@
+#echo "Validating and formatting Terraform code..." and you should run terraform fmt -recursive this is fmt locally so the QG will not fail
+
+name: deployemnt for terraform code on AWS
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - merged
+jobs:
+  deployment:
+    name: deployment steps
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    runs-on: ubuntu-latest 
+    outputs:  
+      step_output: ${{ steps.tests.outputs.passed }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Cache .terraform
+        id: tf-modules-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .terraform
+            .terraform.lock.hcl
+          key: tf-modules-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            tf-${{ runner.os }}-
+
+      - name: Terraform Init
+        if: steps.tf-modules-cache.outputs.cache-hit != 'true'
+        run: terraform init
+      
+      - name: validating || formatting
+        id: tests
+        run: |
+          terraform fmt -check 
+          terraform validate 
+          echo "passed= $?" >> $GITHUB_OUTPUT
+    
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
+
+  check_quality_gate:
+    permissions:
+     statuses: write  
+     contents: read   
+    needs: deployment
+    uses: ./.github/workflows/script-reuse.yaml
+    with:
+      Result: ${{ needs.deployment.outputs.step_output }}
+  
+  
+  
+  
+  
+  # ========================
+  # debug and old code 
+  # ========================
+# - name: debug
+#         env:
+#           CHECK_ITEM: ${{ steps.tests.outputs.passed }}
+#           ALL_STEPS: ${{ toJson(steps) }}
+#         run: |
+#           ls ./.github/workflows/
+#           terraform version 
+#           terraform fmt
+#           which terraform
+#           ls .terraform
+#           ls .terraform.lock.hcl
+
+  
+      # - name: checking for quality gate
+      #   uses: actions/github-script@v6
+      #   if: 
+      #   with:
+      #     script: |
+      #       const passed = '${{  steps.tests.outputs.passed }}' == 'true';
+      #       await github.rest.repos.createCommitStatus({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         sha: context.sha,
+      #         state: passed ? 'success' : 'failure',
+      #         context: 'Quality Gate',
+      #         description: passed ? 'All checks passed' : 'Tests failed'
+      #       });
+      #       if (!passed) core.setFailed('Quality gate failed');
+      
+      
+      
+          # if [[ $? -ne 0 ]]; then
+          #   echo "Terraform validation or formatting failed"
+          #   echo "passed=false" >> $GITHUB_OUTPUT
+          #   exit 1
+          # else
+          #   echo "Terraform validation and formatting passed"
+          #   echo "passed=true" >> $GITHUB_OUTPUT
+          # fi
+        
