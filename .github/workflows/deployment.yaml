@@ -24,13 +24,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: cache terrafrom set-up
+        env:
+          CHECK_ITEM: $(terraform version)
         uses: actions/cache@v3
         id: tf-cache
         with:
           path: |
-            ~/.terraform.d/plugin-cache
-            /tmp/terraform-bin 
-          key: tf-binary-${{ runner.os }}-${{ hashFiles('.terraform-version') }}
+            /usr/bin/terraform
+          key: tf-binary-${{ runner.os }}-${CHECK_ITEM}
       - name: Set up Terraform
         if: steps.tf-cache.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v3
@@ -60,8 +61,7 @@ jobs:
           ls ./.github/workflows/
           terraform version 
           terraform fmt
-          ls ~/.terraform.d/plugin-cache
-          ls /tmp/terraform-bin 
+          ls /usr/bin/terraform 
           ls .terraform
           ls .terraform.lock.hcl
 
