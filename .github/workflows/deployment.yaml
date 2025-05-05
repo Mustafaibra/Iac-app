@@ -23,9 +23,18 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      
+
+      - name: Cache Terraform
+        uses: actions/cache@v3
+        id: tf-cache-v1
+        id: tf-cache
+        with:
+          path: |
+            /tmp/dummy-cache
+          restore-keys: |
+           tf-${{ runner.os }}-Linux-1.11.4-
       - name: Set up Terraform
-        if: steps.tf-cache.outputs.cache-hit != 'true'
+        if: steps.tf-cache-v1.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v3
 
       - name: Locate Terraform paths
@@ -41,6 +50,7 @@ jobs:
 
       - name: Cache Terraform
         uses: actions/cache@v3
+        if: steps.tf-cache-v1.outputs.cache-hit != 'true'
         id: tf-cache
         with:
           path: |
