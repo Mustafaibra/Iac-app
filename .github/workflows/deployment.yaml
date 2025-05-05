@@ -23,20 +23,32 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: cache terrafrom set-up
-        env:
-          CHECK_ITEM: $(terraform version)
-          PATH: $(which terraform)
+      
+      - name: Set up Terraform
+        if: steps.tf-cache.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v3
+
+        name: Locate Terraform paths
+        id: tf-paths
+        run: |
+          TF_BIN_PATH=$(which terraform)
+          echo "bin_path=$TF_BIN_PATH" >> $GITHUB_OUTPUT
+      
+      
+          TF_VERSION=$(terraform version -json | jq -r '.terraform_version')
+          echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
+          echo "config_path=$HOME/.terraform.d" >> $GITHUB_OUTPUT
+
+      - name: Cache Terraform
         uses: actions/cache@v3
         id: tf-cache
         with:
           path: |
-            /usr/bin/terraform
-            ${PATH}
-          key: tf-binary-${{ runner.os }}-${CHECK_ITEM}
-      - name: Set up Terraform
-        if: steps.tf-cache.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v3
+            ${{ steps.tf-paths.outputs.config_path }}
+            ${{ steps.tf-paths.outputs.bin_path }}
+        key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}
+
+      
       - name: Cache .terraform
         id: tf-modules-cache
         uses: actions/cache@v3
@@ -49,6 +61,8 @@ jobs:
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
         run: terraform init
+
+      -
       - name: validating || formatting
         id: tests
         run: |
