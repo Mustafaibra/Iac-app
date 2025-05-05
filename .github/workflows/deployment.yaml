@@ -46,7 +46,7 @@ jobs:
           path: |
             ${{ steps.tf-paths.outputs.config_path }}
             ${{ steps.tf-paths.outputs.bin_path }}
-          key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}-${{ github.ref }}
+          key: tf-${{ runner.os }}-${{ steps.tf-paths.outputs.version }}-${{ github.sha }}
 
       - name: Cache .terraform
         id: tf-modules-cache
@@ -55,7 +55,7 @@ jobs:
           path: |
             .terraform
             .terraform.lock.hcl
-          key: tf-modules-${{ hashFiles('**/*.tf') }}--${{ github.ref }}
+          key: tf-modules-${{ hashFiles('**/*.tf') }}--${{ github.sha }}
 
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
@@ -83,7 +83,7 @@ jobs:
       #   run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
-        
+
   check_quality_gate:
     permissions:
      statuses: write  
