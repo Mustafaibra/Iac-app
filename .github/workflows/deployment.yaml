@@ -60,7 +60,6 @@ jobs:
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
         run: terraform init
-
       
       - name: validating || formatting
         id: tests
