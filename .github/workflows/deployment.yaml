@@ -30,6 +30,7 @@ jobs:
         with:
           path: |
             /tmp/dummy-cache
+          key: tf-${{ runner.os }}-Linux-1.11.4-${{ github.sha }}
           restore-keys: |
            tf-${{ runner.os }}-Linux-1.11.4-
       - name: Set up Terraform
