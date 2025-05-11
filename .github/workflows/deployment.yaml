@@ -43,6 +43,15 @@ jobs:
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
         run: terraform init
 
+      - name: immediate Cache .terraform
+        id: tf-modules-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .terraform
+            .terraform.lock.hcl
+          key: ${{ stesp.tf-modules-cache.outputs.cache-hit }}
+
 #echo "Validating and formatting Terraform code..." and you should run terraform fmt -recursive this is fmt locally so the QG will not fail
       
       - name: validating || formatting
