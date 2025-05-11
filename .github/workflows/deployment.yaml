@@ -2,6 +2,16 @@
 name: deployemnt for terraform code on AWS
 on:
   workflow_dispatch:
+    inputs:
+      choice:
+        description: 'Choose an option'
+        required: false
+        default: 'yes'
+        type: choice
+        options:
+          - Destroy
+          - Apply
+          - Apply and Destroy
   push:
     branches:
       - main
@@ -76,8 +86,10 @@ jobs:
           fi
           
       - name: Terraform Apply
+        if: github.event.inputs.choice == 'Apply and Destroy' || github.event.inputs.choice == 'Apply' 
         run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
       - name: Terraform Destroy
+        if: github.event.inputs.choice == 'Apply and Destroy' || github.event.inputs.choice == 'Destroy'
         run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
 
   check_quality_gate:
