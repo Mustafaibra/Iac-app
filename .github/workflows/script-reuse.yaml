@@ -14,7 +14,7 @@ jobs:
       - name: debug first
         run: echo ${{ inputs.Result }}
       - name: Checking for quality gate
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const passed = '${{ inputs.Result }}' == 0;
