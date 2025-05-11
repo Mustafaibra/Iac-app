@@ -39,15 +39,6 @@ jobs:
           restore-keys: |
             tf-${{ runner.os }}-
 
-      - name: save Cache .terraform immediatly 
-        id: tf-modules-save
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            .terraform
-            .terraform.lock.hcl
-          key: ${{ steps.tf-modules-cache.outputs.cache-primary-key }}     
-
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
         run: terraform init
@@ -65,12 +56,10 @@ jobs:
         run: |
           terraform workspace select -or-create Prod
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
-            export TER_ENV=prod
             echo "Using Prod workspace"
-           terraform workspace select -or-create Prod
+            terraform workspace select -or-create Prod
           else
             echo "Using Dev workspace"
-            export TER_ENV=Dev
             terraform workspace select -or-create Dev
           fi
           
