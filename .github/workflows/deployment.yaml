@@ -50,7 +50,7 @@ jobs:
           path: |
             .terraform
             .terraform.lock.hcl
-          key: ${{ stesp.tf-modules-cache.outputs.cache-hit }}
+          key: ${{ steps.tf-modules-cache.outputs.cache-primary-key }}
 
 #echo "Validating and formatting Terraform code..." and you should run terraform fmt -recursive this is fmt locally so the QG will not fail
       
