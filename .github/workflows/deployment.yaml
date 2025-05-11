@@ -30,7 +30,7 @@ jobs:
 
       - name: Cache .terraform
         id: tf-modules-cache
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v4
         with:
           path: |
             .terraform
@@ -38,6 +38,15 @@ jobs:
           key: tf-modules-${{ hashFiles('**/*.tf') }}
           restore-keys: |
             tf-${{ runner.os }}-
+
+      - name: save Cache .terraform immediatly 
+        id: tf-modules-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .terraform
+            .terraform.lock.hcl
+          key: ${{ steps.tf-modules-cache.outputs.cache-primary-key }}     
 
       - name: Terraform Init
         if: steps.tf-modules-cache.outputs.cache-hit != 'true'
