@@ -10,7 +10,7 @@ terraform {
     bucket         = "mustafa-tf-state2025"
     key            = "env/state/terraform.tfstate"
     region         = "eu-north-1" # Replace with your desired region
-    dynamodb_table = "terraform-locks"
+    #dynamodb_table = "terraform-locks"
 
   }
 }
