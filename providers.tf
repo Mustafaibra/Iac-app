@@ -7,9 +7,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "mustafa-tf-state2025"
-    key    = "dev/terraform.tfstate"
-    region = "eu-north-1" # Replace with your desired region
+    bucket         = "mustafa-tf-state2025"
+    key            = "env/${TER_ENV}/terraform.tfstate"
+    region         = "eu-north-1" # Replace with your desired region
+    dynamodb_table = "terraform-locks"
+
   }
 }
 provider "aws" {
