@@ -89,7 +89,7 @@ jobs:
         if: github.event.inputs.choice == 'Apply and Destroy' || github.event.inputs.choice == 'Apply' || github.event_name == 'push' || github.event_name == 'pull_request'
         run: terraform apply -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
       - name: Terraform Destroy
-        if: github.event.inputs.choice == 'Apply and Destroy' || github.event.inputs.choice == 'Destroy' || github.event_name == 'push' || || github.event_name == 'pull_request'
+        if: github.event.inputs.choice == 'Apply and Destroy' || github.event.inputs.choice == 'Destroy' || github.event_name == 'push' || github.event_name == 'pull_request'
         run: terraform destroy -auto-approve -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}"
 
   check_quality_gate:
