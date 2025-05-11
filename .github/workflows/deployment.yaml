@@ -6,7 +6,7 @@ on:
       choice:
         description: 'Choose an option'
         required: false
-        default: 'yes'
+        default: 'Apply and Destroy'
         type: choice
         options:
           - Destroy
