@@ -85,7 +85,7 @@ jobs:
      statuses: write  
      contents: read   
     needs: deployment
-    if: github.ref != "refs/heads/main"
+    if: github.ref != 'refs/heads/main'
     uses: ./.github/workflows/script-reuse.yaml
     with:
       Result: ${{ needs.deployment.outputs.step_output }}
