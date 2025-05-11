@@ -67,7 +67,6 @@ jobs:
           echo "debug "
           echo ${{ github.event_name }}
           echo ${{ github.ref }}
-          terraform workspace select -or-create Prod
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "Using Prod workspace"
             terraform workspace select -or-create Prod
